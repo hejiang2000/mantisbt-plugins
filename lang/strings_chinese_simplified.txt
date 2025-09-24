@@ -1,0 +1,38 @@
+<?php
+
+$s_plugin_FeishuNotifier_enabled_label = '启用插件';
+$s_plugin_FeishuNotifier_notifications = '通知设置';
+$s_plugin_FeishuNotifier_description_settings = '描述设置';
+$s_plugin_FeishuNotifier_webhook_url_info = '飞书机器人 Webhook 地址';
+
+$s_plugin_FeishuNotifier_title = '飞书通知';
+$s_plugin_FeishuNotifier_description = '当问题被创建、更新、关闭或重新打开时发送飞书通知';
+$s_plugin_FeishuNotifier_config = '配置飞书通知';
+
+$s_plugin_FeishuNotifier_webhook_url = '飞书 Webhook URL';
+$s_plugin_FeishuNotifier_webhook_url_description = '飞书机器人 Webhook URL';
+
+$s_plugin_FeishuNotifier_enabled = '启用插件';
+$s_plugin_FeishuNotifier_enabled_description = '启用飞书通知功能';
+
+$s_plugin_FeishuNotifier_notify_on_new = '新建问题通知';
+$s_plugin_FeishuNotifier_notify_on_new_description = '当新问题被创建时发送通知';
+
+$s_plugin_FeishuNotifier_notify_on_update = '更新问题通知';
+$s_plugin_FeishuNotifier_notify_on_update_description = '当问题被更新时发送通知';
+
+$s_plugin_FeishuNotifier_notify_on_close = '关闭问题通知';
+$s_plugin_FeishuNotifier_notify_on_close_description = '当问题被关闭时发送通知';
+
+$s_plugin_FeishuNotifier_notify_on_reopen = '重新打开问题通知';
+$s_plugin_FeishuNotifier_notify_on_reopen_description = '当问题被重新打开时发送通知';
+
+$s_plugin_FeishuNotifier_include_description = '包含问题描述';
+$s_plugin_FeishuNotifier_include_description_description = '在通知中包含问题描述';
+
+$s_plugin_FeishuNotifier_max_description_length = '描述最大长度';
+$s_plugin_FeishuNotifier_max_description_length_description = '问题描述的最大字符数';
+
+$s_plugin_FeishuNotifier_update_config = '更新配置';
+$s_plugin_FeishuNotifier_plugin_enabled = '飞书通知插件已启用';
+$s_plugin_FeishuNotifier_plugin_disabled = '飞书通知插件已禁用';

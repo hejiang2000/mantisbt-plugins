@@ -1,0 +1,20 @@
+<?php
+/**
+ * English strings for Feishu Notifier plugin
+ */
+
+$s_plugin_FeishuNotifier_title = 'Feishu Notifier';
+$s_plugin_FeishuNotifier_description = 'Sends bug updates to Feishu group via webhook';
+$s_title = 'Feishu Notifier Configuration';
+$s_webhook_url = 'Feishu Webhook URL';
+$s_webhook_url_info = 'Get this URL from your Feishu group custom bot settings';
+$s_enabled = 'Plugin Status';
+$s_enabled_label = 'Enable Feishu notifications';
+$s_notifications = 'Notification Events';
+$s_notify_on_new = 'Notify on new bug reports';
+$s_notify_on_update = 'Notify on bug updates';
+$s_notify_on_close = 'Notify when bugs are closed';
+$s_notify_on_reopen = 'Notify when bugs are reopened';
+$s_description_settings = 'Description Settings';
+$s_include_description = 'Include bug description in notifications';
+$s_max_description_length = 'Maximum description length (characters)';
