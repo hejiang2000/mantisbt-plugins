@@ -116,20 +116,21 @@ class FeishuNotifierPlugin extends MantisPlugin {
      * Handle bug actions (like resolve, close, etc.)
      */
     public function bug_action($p_event, $p_action, $p_bug_ids) {
+        $bug_ids = is_array($p_bug_ids) ? $p_bug_ids : [$p_bug_ids];
         error_log("Feishu Notifier: bug_action called, event: {$p_event}, action: {$p_action}");
-        error_log("Feishu Notifier: bug_ids count: " . count($p_bug_ids));
+        error_log("Feishu Notifier: bug_ids count: " . count($bug_ids));
         
         if (!$this->is_enabled()) {
             error_log("Feishu Notifier: Plugin disabled, returning");
             return;
         }
         
-        if (count($p_bug_ids) == 0) {
+        if (count($bug_ids) == 0) {
             error_log("Feishu Notifier: No bug IDs provided, returning");
             return;
         }
         
-        foreach ($p_bug_ids as $bug_id) {
+        foreach ($bug_ids as $bug_id) {
             error_log("Feishu Notifier: Processing bug ID: {$bug_id}");
             $bug_data = bug_get($bug_id);
             if ($bug_data) {
