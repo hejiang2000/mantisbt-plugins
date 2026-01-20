@@ -36,6 +36,8 @@ class FeishuNotifierPlugin extends MantisPlugin {
             'EVENT_REPORT_BUG' => 'bug_reported',
             'EVENT_UPDATE_BUG_DATA' => 'bug_updated',
             'EVENT_BUG_ACTION' => 'bug_action',
+            'EVENT_MANAGE_PROJECT_UPDATE_FORM' => 'project_config_form',
+            'EVENT_MANAGE_PROJECT_UPDATE' => 'project_config_update',
         );
     }
 
@@ -150,8 +152,21 @@ class FeishuNotifierPlugin extends MantisPlugin {
         error_log("Feishu Notifier: send_notification called, action: {$p_action}");
         error_log("Feishu Notifier: bug ID: " . (isset($p_bug_data->id) ? $p_bug_data->id : 'null'));
         
-        $webhook_url = $this->get_config('webhook_url');
-        error_log("Feishu Notifier: webhook_url: " . (empty($webhook_url) ? 'empty' : 'set'));
+        // Get project ID from bug data
+        $project_id = isset($p_bug_data->project_id) ? $p_bug_data->project_id : null;
+        
+        // Try to get project-specific webhook URL first
+        $webhook_url = '';
+        if ($project_id) {
+            $webhook_url = plugin_config_get('webhook_url', '', false, null, $project_id);
+            error_log("Feishu Notifier: Project-specific webhook_url (project {$project_id}): " . (empty($webhook_url) ? 'empty' : 'set'));
+        }
+        
+        // Fall back to global webhook URL if project-specific one is not set
+        if (empty($webhook_url)) {
+            $webhook_url = $this->get_config('webhook_url');
+            error_log("Feishu Notifier: Using global webhook_url: " . (empty($webhook_url) ? 'empty' : 'set'));
+        }
         
         if (empty($webhook_url)) {
             error_log("Feishu Notifier: Webhook URL empty, not sending notification");
@@ -313,5 +328,28 @@ class FeishuNotifierPlugin extends MantisPlugin {
         $value = plugin_config_get($p_key, $p_default);
         error_log("Feishu Notifier: get_config returning: " . (is_array($value) ? 'array' : (is_bool($value) ? ($value ? 'true' : 'false') : $value)));
         return $value;
+    }
+    
+    /**
+     * Display project-specific configuration form
+     */
+    public function project_config_form($p_event, $p_project_id) {
+        $t_webhook_url = plugin_config_get('webhook_url', '', false, null, $p_project_id);
+        
+        echo '<div class="form-group">';
+        echo '<label class="col-sm-3 control-label">', plugin_lang_get('webhook_url'), '</label>';
+        echo '<div class="col-sm-9">';
+        echo '<input type="text" name="plugin_FeishuNotifier_webhook_url" class="form-control" value="', string_attribute($t_webhook_url), '" size="60" />';
+        echo '<span class="help-block">', plugin_lang_get('webhook_url_info'), '</span>';
+        echo '</div>';
+        echo '</div>';
+    }
+    
+    /**
+     * Handle project-specific configuration update
+     */
+    public function project_config_update($p_event, $p_project_id) {
+        $t_webhook_url = gpc_get_string('plugin_FeishuNotifier_webhook_url', '');
+        plugin_config_set('webhook_url', $t_webhook_url, NO_USER, $p_project_id);
     }
 }
