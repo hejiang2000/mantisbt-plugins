@@ -1,26 +1,5 @@
 /* Kanban Plugin Styles */
 
-/* Tab 样式 */
-#kanban-tabs {
-    padding-left: 10px;
-    padding-top: 8px;
-}
-
-#kanban-tabs > li > a {
-    padding: 8px 15px;
-    border: 1px solid transparent;
-    border-bottom-color: #ddd;
-    background-color: #f9f9f9;
-    color: #666;
-}
-
-#kanban-tabs > li.active > a {
-    background-color: #fff;
-    border-color: #ddd #ddd transparent;
-    color: #333;
-    font-weight: bold;
-}
-
 /* 用户表格样式 */
 .kanban-user-table {
     margin-bottom: 0;
@@ -120,15 +99,6 @@
 
 /* 响应式调整 */
 @media (max-width: 768px) {
-    .kanban-header {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .kanban-search {
-        width: 100%;
-    }
-    
     .kanban-col-user,
     .kanban-col-in-progress,
     .kanban-col-pending {

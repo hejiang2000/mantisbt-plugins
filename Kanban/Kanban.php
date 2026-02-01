@@ -22,9 +22,9 @@ class KanbanPlugin extends MantisPlugin {
 
     function onMainMenu() {
         // 仅系统管理员和项目经理可见
-        if (!$this->user_has_access()) {
-            return array();
-        }
+        // if (!$this->user_has_access()) {
+        //     return array();
+        // }
 
         return array(
             array(

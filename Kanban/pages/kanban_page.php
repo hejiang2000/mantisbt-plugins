@@ -9,10 +9,10 @@ layout_page_begin();
 $t_project_id = helper_get_current_project();
 
 // 定义状态常量
-// 正在处理的问题状态：已确认、已分配
-$t_in_progress_statuses = array(CONFIRMED, ASSIGNED);
-// 待处理问题状态：新建、反馈、认可
-$t_pending_statuses = array(NEW_, FEEDBACK, ACKNOWLEDGED);
+// 正在处理的问题状态：已确认
+$t_in_progress_statuses = array(CONFIRMED);
+// 待处理问题状态：新建、已分配、反馈、认可
+$t_pending_statuses = array(NEW_, ASSIGNED, FEEDBACK, ACKNOWLEDGED);
 
 // 获取不同角色的用户
 $t_developer_users = kanban_get_users_by_role(DEVELOPER, $t_project_id);
@@ -21,11 +21,11 @@ $t_manager_users = kanban_get_manager_users($t_project_id);
 
 ?>
 
-<div class="col-md-12 col-xs-12">
+<!-- <div class="col-md-12 col-xs-12"> -->
     <!-- Tab 页签 -->
-    <div class="widget-box widget-color-blue2">
-        <div class="widget-header">
-            <ul class="nav nav-tabs" id="kanban-tabs">
+    <!-- <div class="widget-box widget-color-blue2">
+        <div class="widget-header"> -->
+            <ul class="nav nav-tabs padding-18" id="kanban-tabs">
                 <li class="active">
                     <a href="#tab-developers" data-toggle="tab">
                         <i class="ace-icon fa fa-code"></i>
@@ -45,10 +45,10 @@ $t_manager_users = kanban_get_manager_users($t_project_id);
                     </a>
                 </li>
             </ul>
-        </div>
+        <!-- </div>
 
         <div class="widget-body">
-            <div class="widget-main no-padding">
+            <div class="widget-main no-padding"> -->
                 <div class="tab-content">
                     <!-- 开发人员页签 -->
                     <div class="tab-pane active" id="tab-developers">
@@ -65,10 +65,10 @@ $t_manager_users = kanban_get_manager_users($t_project_id);
                         <?php kanban_render_user_table($t_manager_users, $t_in_progress_statuses, $t_pending_statuses, $t_project_id); ?>
                     </div>
                 </div>
-            </div>
+            <!-- </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <?php
 layout_page_end();
