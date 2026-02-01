@@ -135,7 +135,7 @@ function kanban_render_user_table($p_users, $p_in_progress_statuses, $p_pending_
                                                 <span class="kanban-issue-version">[<?php echo string_display_line($t_issue['target_version']); ?>]</span>
                                             <?php } ?>
                                             <?php echo string_display_line($t_issue['summary']); ?>
-                                            <span class="kanban-issue-date">(<?php echo date('Y-m-d', $t_issue['assigned_date']); ?>)</span>
+                                            <span class="kanban-issue-date">(<?php echo date('Y-m-d', $t_issue['status_change_date']); ?>)</span>
                                         </a>
                                     </div>
                                 <?php } ?>
@@ -154,7 +154,7 @@ function kanban_render_user_table($p_users, $p_in_progress_statuses, $p_pending_
                                                 <span class="kanban-issue-version">[<?php echo string_display_line($t_issue['target_version']); ?>]</span>
                                             <?php } ?>
                                             <?php echo string_display_line($t_issue['summary']); ?>
-                                            <span class="kanban-issue-date">(<?php echo date('Y-m-d', $t_issue['assigned_date']); ?>)</span>
+                                            <span class="kanban-issue-date">(<?php echo date('Y-m-d', $t_issue['status_change_date']); ?>)</span>
                                         </a>
                                     </div>
                                 <?php } ?>
@@ -293,8 +293,16 @@ function kanban_get_user_issues_by_statuses($p_user_id, $p_statuses, $p_project_
 
     $t_issues = array();
     while ($t_row = db_fetch_array($t_result)) {
-        // 查询问题首次指派给当前用户的日期
-        $t_row['assigned_date'] = kanban_get_first_assigned_date($t_row['id'], $p_user_id);
+        // 查询问题首次变更为指定状态的日期
+        // 对于多个状态，取最早进入任一状态的日期
+        $t_earliest_date = time();
+        foreach ($p_statuses as $t_status) {
+            $t_status_date = kanban_get_first_status_change_date($t_row['id'], $p_user_id, $t_status);
+            if ($t_status_date < $t_earliest_date) {
+                $t_earliest_date = $t_status_date;
+            }
+        }
+        $t_row['status_change_date'] = $t_earliest_date;
         $t_issues[] = $t_row;
     }
 
@@ -302,29 +310,30 @@ function kanban_get_user_issues_by_statuses($p_user_id, $p_statuses, $p_project_
 }
 
 /**
- * 获取问题首次指派给指定用户的日期
+ * 获取问题首次变更为指定状态的日期
  * @param int $p_bug_id 问题ID
  * @param int $p_user_id 用户ID
+ * @param int $p_status 状态
  * @return int Unix时间戳
  */
-function kanban_get_first_assigned_date($p_bug_id, $p_user_id) {
+function kanban_get_first_status_change_date($p_bug_id, $p_user_id, $p_status) {
     $t_history_table = db_get_table('bug_history');
 
-    // 查询历史记录中首次将该问题指派给指定用户的时间
-    $t_query = "SELECT MIN(date_modified) as first_assigned_date
+    // 查询历史记录中首次变更为指定状态的时间
+    $t_query = "SELECT MIN(date_modified) as first_status_date
                 FROM $t_history_table
                 WHERE bug_id = " . db_param() . "
-                AND field_name = 'handler_id'
+                AND field_name = 'status'
                 AND new_value = " . db_param();
 
-    $t_result = db_query($t_query, array($p_bug_id, $p_user_id));
+    $t_result = db_query($t_query, array($p_bug_id, $p_status));
     $t_row = db_fetch_array($t_result);
 
-    if ($t_row && $t_row['first_assigned_date']) {
-        return $t_row['first_assigned_date'];
+    if ($t_row && $t_row['first_status_date']) {
+        return $t_row['first_status_date'];
     }
 
-    // 如果没有找到指派历史，返回问题的创建日期
+    // 如果没有找到状态变更历史，返回问题的创建日期
     $t_bug_table = db_get_table('bug');
     $t_query = "SELECT date_submitted
                 FROM $t_bug_table
