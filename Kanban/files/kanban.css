@@ -1,0 +1,137 @@
+/* Kanban Plugin Styles */
+
+/* Tab 样式 */
+#kanban-tabs {
+    padding-left: 10px;
+    padding-top: 8px;
+}
+
+#kanban-tabs > li > a {
+    padding: 8px 15px;
+    border: 1px solid transparent;
+    border-bottom-color: #ddd;
+    background-color: #f9f9f9;
+    color: #666;
+}
+
+#kanban-tabs > li.active > a {
+    background-color: #fff;
+    border-color: #ddd #ddd transparent;
+    color: #333;
+    font-weight: bold;
+}
+
+/* 用户表格样式 */
+.kanban-user-table {
+    margin-bottom: 0;
+}
+
+.kanban-user-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.kanban-user-table td {
+    vertical-align: top;
+}
+
+.kanban-col-user {
+    width: 15%;
+    text-align: center;
+}
+
+.kanban-col-in-progress {
+    width: 42.5%;
+}
+
+.kanban-col-pending {
+    width: 42.5%;
+}
+
+/* 用户名单元格 */
+.kanban-user-cell {
+    text-align: center;
+    vertical-align: middle !important;
+    white-space: nowrap;
+}
+
+.kanban-username {
+    font-weight: bold;
+    color: #333;
+}
+
+.kanban-realname {
+    color: #666;
+    margin-left: 3px;
+}
+
+/* 问题列表单元格 */
+.kanban-issues-cell {
+    padding: 10px !important;
+}
+
+.kanban-issues-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.kanban-issue-item {
+    padding: 8px 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+    line-height: 1.4;
+}
+
+.kanban-issue-item:hover {
+    background-color: #f0f0f0;
+    border-color: #ccc;
+}
+
+.kanban-issue-link {
+    color: #337ab7;
+    text-decoration: none;
+}
+
+.kanban-issue-link:hover {
+    color: #23527c;
+    text-decoration: underline;
+}
+
+.kanban-issue-version {
+    color: #5cb85c;
+    font-size: 12px;
+    margin-right: 5px;
+}
+
+.kanban-issue-date {
+    color: #888;
+    font-size: 11px;
+    margin-left: 5px;
+}
+
+.kanban-no-issues {
+    color: #999;
+    font-style: italic;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .kanban-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .kanban-search {
+        width: 100%;
+    }
+    
+    .kanban-col-user,
+    .kanban-col-in-progress,
+    .kanban-col-pending {
+        width: auto;
+    }
+}

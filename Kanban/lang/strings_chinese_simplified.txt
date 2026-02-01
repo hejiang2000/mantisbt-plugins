@@ -1,0 +1,24 @@
+<?php
+
+$s_plugin_Kanban_title = '工作看板';
+$s_plugin_Kanban_description = 'MantisBT 工作看板插件，用于可视化管理和跟踪问题。';
+$s_plugin_Kanban_menu_title = '工作看板';
+$s_plugin_Kanban_page_title = '工作看板';
+$s_plugin_Kanban_welcome_message = '欢迎使用看板！';
+$s_plugin_Kanban_column_todo = '待办';
+$s_plugin_Kanban_column_in_progress = '进行中';
+$s_plugin_Kanban_column_done = '已完成';
+$s_plugin_Kanban_no_issues = '未找到工作项。';
+
+# 摘要页面
+$s_plugin_Kanban_current_user = '当前用户';
+$s_plugin_Kanban_search_placeholder = '搜索问题...';
+$s_plugin_Kanban_tab_users = '用户';
+$s_plugin_Kanban_col_user = '用户';
+$s_plugin_Kanban_col_in_progress = '正在处理';
+$s_plugin_Kanban_col_pending = '待处理';
+
+# 三个页签
+$s_plugin_Kanban_tab_developers = '开发人员';
+$s_plugin_Kanban_tab_reporters = '报告人员';
+$s_plugin_Kanban_tab_managers = '管理人员';

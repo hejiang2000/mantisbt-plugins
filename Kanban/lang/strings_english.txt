@@ -1,0 +1,24 @@
+<?php
+
+$s_plugin_Kanban_title = 'Work Kanban';
+$s_plugin_Kanban_description = 'A work kanban board plugin for MantisBT to visualize and manage issues.';
+$s_plugin_Kanban_menu_title = 'Work Kanban';
+$s_plugin_Kanban_page_title = 'Work Kanban';
+$s_plugin_Kanban_welcome_message = 'Welcome to the Kanban Board!';
+$s_plugin_Kanban_column_todo = 'To Do';
+$s_plugin_Kanban_column_in_progress = 'In Progress';
+$s_plugin_Kanban_column_done = 'Done';
+$s_plugin_Kanban_no_issues = 'No work items found.';
+
+# Summary Page
+$s_plugin_Kanban_current_user = 'Current User';
+$s_plugin_Kanban_search_placeholder = 'Search issues...';
+$s_plugin_Kanban_tab_users = 'Users';
+$s_plugin_Kanban_col_user = 'User';
+$s_plugin_Kanban_col_in_progress = 'In Progress';
+$s_plugin_Kanban_col_pending = 'Pending';
+
+# Three Tabs
+$s_plugin_Kanban_tab_developers = 'Developers';
+$s_plugin_Kanban_tab_reporters = 'Reporters';
+$s_plugin_Kanban_tab_managers = 'Managers';
