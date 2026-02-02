@@ -283,7 +283,7 @@ function kanban_get_user_issues_by_statuses($p_user_id, $p_statuses, $p_project_
         $t_params[] = $t_status;
     }
 
-    $t_query = "SELECT id, summary, target_version, project_id
+    $t_query = "SELECT id, summary, target_version, project_id, status
                 FROM $t_bug_table
                 WHERE handler_id = " . db_param() . "
                 AND status IN (" . implode(', ', $t_status_placeholders) . ")";
@@ -302,16 +302,15 @@ function kanban_get_user_issues_by_statuses($p_user_id, $p_statuses, $p_project_
         // 查询问题首次变更为指定状态的日期
         // 对于多个状态，取最早进入任一状态的日期
         $t_earliest_date = time();
-        $t_earliest_status = '';
         foreach ($p_statuses as $t_status) {
             $t_status_date = kanban_get_first_status_change_date($t_row['id'], $p_user_id, $t_status);
             if ($t_status_date < $t_earliest_date) {
                 $t_earliest_date = $t_status_date;
-                $t_earliest_status = get_enum_element('status', $t_status);
             }
         }
         $t_row['status_change_date'] = $t_earliest_date;
-        $t_row['status_name'] = $t_earliest_status;
+        // 获取当前状态名称
+        $t_row['status_name'] = get_enum_element('status', $t_row['status']);
         // 获取项目名称
         $t_row['project_name'] = project_get_name($t_row['project_id']);
         $t_issues[] = $t_row;
