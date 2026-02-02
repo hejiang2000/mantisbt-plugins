@@ -1,0 +1,5 @@
+<?php
+
+$s_plugin_Gantt_title = 'Gantt Chart';
+$s_plugin_Gantt_description = 'A gantt chart plugin for MantisBT to visualize project timelines.';
+$s_plugin_Gantt_gantt = 'Gantt Chart';

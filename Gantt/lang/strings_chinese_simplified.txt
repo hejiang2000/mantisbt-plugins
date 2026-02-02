@@ -1,0 +1,5 @@
+<?php
+
+$s_plugin_Gantt_title = '甘特图';
+$s_plugin_Gantt_description = 'MantisBT 甘特图插件，用于可视化项目时间线。';
+$s_plugin_Gantt_gantt = '甘特图';
