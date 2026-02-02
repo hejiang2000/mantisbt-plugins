@@ -13,6 +13,8 @@ $t_project_id = helper_get_current_project();
 $t_in_progress_statuses = array(CONFIRMED);
 // 待处理问题状态：新建、已分配、反馈、认可
 $t_pending_statuses = array(NEW_, ASSIGNED, FEEDBACK, ACKNOWLEDGED);
+// 报告人员待处理问题状态：新建、已分配、反馈、认可、已解决
+$t_reporter_pending_statuses = array(NEW_, ASSIGNED, FEEDBACK, ACKNOWLEDGED, RESOLVED);
 
 // 获取不同角色的用户
 $t_developer_users = kanban_get_users_by_role(DEVELOPER, $t_project_id);
@@ -57,7 +59,7 @@ $t_manager_users = kanban_get_manager_users($t_project_id);
 
                     <!-- 报告人员页签 -->
                     <div class="tab-pane" id="tab-reporters">
-                        <?php kanban_render_user_table($t_reporter_users, $t_in_progress_statuses, $t_pending_statuses, $t_project_id); ?>
+                        <?php kanban_render_user_table($t_reporter_users, $t_in_progress_statuses, $t_reporter_pending_statuses, $t_project_id); ?>
                     </div>
 
                     <!-- 管理人员页签 -->
@@ -132,10 +134,12 @@ function kanban_render_user_table($p_users, $p_in_progress_statuses, $p_pending_
                                     <div class="kanban-issue-item">
                                         <a href="view.php?id=<?php echo $t_issue['id']; ?>" class="kanban-issue-link">
                                             <?php if ($t_issue['target_version']) { ?>
-                                                <span class="kanban-issue-version">[<?php echo string_display_line($t_issue['target_version']); ?>]</span>
+                                                <span class="kanban-issue-version">[<?php echo string_display_line($t_issue['project_name']); ?>-<?php echo string_display_line($t_issue['target_version']); ?>]</span>
+                                            <?php } else { ?>
+                                                <span class="kanban-issue-version">[<?php echo string_display_line($t_issue['project_name']); ?>]</span>
                                             <?php } ?>
                                             <?php echo string_display_line($t_issue['summary']); ?>
-                                            <span class="kanban-issue-date">(<?php echo date('Y-m-d', $t_issue['status_change_date']); ?>)</span>
+                                            <span class="kanban-issue-date">(<?php echo $t_issue['status_name']; ?>@<?php echo date('Y-m-d', $t_issue['status_change_date']); ?>)</span>
                                         </a>
                                     </div>
                                 <?php } ?>
@@ -151,10 +155,12 @@ function kanban_render_user_table($p_users, $p_in_progress_statuses, $p_pending_
                                     <div class="kanban-issue-item">
                                         <a href="view.php?id=<?php echo $t_issue['id']; ?>" class="kanban-issue-link">
                                             <?php if ($t_issue['target_version']) { ?>
-                                                <span class="kanban-issue-version">[<?php echo string_display_line($t_issue['target_version']); ?>]</span>
+                                                <span class="kanban-issue-version">[<?php echo string_display_line($t_issue['project_name']); ?>-<?php echo string_display_line($t_issue['target_version']); ?>]</span>
+                                            <?php } else { ?>
+                                                <span class="kanban-issue-version">[<?php echo string_display_line($t_issue['project_name']); ?>]</span>
                                             <?php } ?>
                                             <?php echo string_display_line($t_issue['summary']); ?>
-                                            <span class="kanban-issue-date">(<?php echo date('Y-m-d', $t_issue['status_change_date']); ?>)</span>
+                                            <span class="kanban-issue-date">(<?php echo $t_issue['status_name']; ?>@<?php echo date('Y-m-d', $t_issue['status_change_date']); ?>)</span>
                                         </a>
                                     </div>
                                 <?php } ?>
@@ -277,7 +283,7 @@ function kanban_get_user_issues_by_statuses($p_user_id, $p_statuses, $p_project_
         $t_params[] = $t_status;
     }
 
-    $t_query = "SELECT id, summary, target_version
+    $t_query = "SELECT id, summary, target_version, project_id
                 FROM $t_bug_table
                 WHERE handler_id = " . db_param() . "
                 AND status IN (" . implode(', ', $t_status_placeholders) . ")";
@@ -296,13 +302,18 @@ function kanban_get_user_issues_by_statuses($p_user_id, $p_statuses, $p_project_
         // 查询问题首次变更为指定状态的日期
         // 对于多个状态，取最早进入任一状态的日期
         $t_earliest_date = time();
+        $t_earliest_status = '';
         foreach ($p_statuses as $t_status) {
             $t_status_date = kanban_get_first_status_change_date($t_row['id'], $p_user_id, $t_status);
             if ($t_status_date < $t_earliest_date) {
                 $t_earliest_date = $t_status_date;
+                $t_earliest_status = get_enum_element('status', $t_status);
             }
         }
         $t_row['status_change_date'] = $t_earliest_date;
+        $t_row['status_name'] = $t_earliest_status;
+        // 获取项目名称
+        $t_row['project_name'] = project_get_name($t_row['project_id']);
         $t_issues[] = $t_row;
     }
 
