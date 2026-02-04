@@ -105,3 +105,14 @@
         width: auto;
     }
 }
+
+/* 状态变更日期样式 */
+.kanban-date-warning {
+    color: #ffc107;
+    font-weight: bold;
+}
+
+.kanban-date-overdue {
+    color: #dc3545;
+    font-weight: bold;
+}

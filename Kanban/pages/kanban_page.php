@@ -139,7 +139,7 @@ function kanban_render_user_table($p_users, $p_in_progress_statuses, $p_pending_
                                                 <span class="kanban-issue-version">[<?php echo string_display_line($t_issue['project_name']); ?>]</span>
                                             <?php } ?>
                                             <?php echo string_display_line($t_issue['summary']); ?>
-                                            <span class="kanban-issue-date">(<?php echo $t_issue['status_name']; ?>@<?php echo date('Y-m-d', $t_issue['status_change_date']); ?>)</span>
+                                            <span class="kanban-issue-date">(<?php echo $t_issue['status_name']; ?>@<span class="<?php echo kanban_get_status_change_date_class($t_issue['status_change_date']); ?>"><?php echo date('Y-m-d', $t_issue['status_change_date']); ?></span>)</span>
                                         </a>
                                     </div>
                                 <?php } ?>
@@ -160,7 +160,7 @@ function kanban_render_user_table($p_users, $p_in_progress_statuses, $p_pending_
                                                 <span class="kanban-issue-version">[<?php echo string_display_line($t_issue['project_name']); ?>]</span>
                                             <?php } ?>
                                             <?php echo string_display_line($t_issue['summary']); ?>
-                                            <span class="kanban-issue-date">(<?php echo $t_issue['status_name']; ?>@<?php echo date('Y-m-d', $t_issue['status_change_date']); ?>)</span>
+                                            <span class="kanban-issue-date">(<?php echo $t_issue['status_name']; ?>@<span class="<?php echo kanban_get_status_change_date_class($t_issue['status_change_date']); ?>"><?php echo date('Y-m-d', $t_issue['status_change_date']); ?></span>)</span>
                                         </a>
                                     </div>
                                 <?php } ?>
@@ -352,4 +352,22 @@ function kanban_get_first_status_change_date($p_bug_id, $p_user_id, $p_status) {
     $t_row = db_fetch_array($t_result);
 
     return $t_row ? $t_row['date_submitted'] : time();
+}
+
+/**
+ * 获取状态变更日期的样式类名
+ * @param int $p_status_change_date 状态变更日期的Unix时间戳
+ * @return string 样式类名
+ */
+function kanban_get_status_change_date_class($p_status_change_date) {
+    $t_current_time = time();
+    $t_days_diff = floor(($t_current_time - $p_status_change_date) / (60 * 60 * 24));
+    
+    if ($t_days_diff >= 14) {
+        return 'kanban-date-overdue';
+    } elseif ($t_days_diff >= 7) {
+        return 'kanban-date-warning';
+    }
+    
+    return '';
 }
