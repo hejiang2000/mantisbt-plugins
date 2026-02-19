@@ -13,10 +13,21 @@ auth_ensure_user_authenticated();
 // 获取当前项目
 $t_project_id = helper_get_current_project();
 
-// 获取所有用户（handlers）
+// 获取所有开发人员（access_level >= DEVELOPER）
 $t_user_table = db_get_table('user');
-$t_query_users = "SELECT id, username, realname FROM $t_user_table WHERE enabled = 1 ORDER BY username";
-$t_result_users = db_query($t_query_users);
+$t_project_user_list_table = db_get_table('project_user_list');
+$t_query_users = "
+    SELECT DISTINCT u.id, u.username, u.realname 
+    FROM $t_user_table u 
+    LEFT JOIN $t_project_user_list_table pul ON u.id = pul.user_id AND pul.project_id = " . db_param() . "
+    WHERE u.enabled = 1 
+    AND (
+        u.access_level = " . DEVELOPER . "
+        OR (pul.access_level IS NOT NULL AND pul.access_level = " . DEVELOPER . ")
+    )
+    ORDER BY u.username
+";
+$t_result_users = db_query($t_query_users, array($t_project_id));
 $t_handlers = array();
 while ($t_row = db_fetch_array($t_result_users)) {
     $t_handlers[$t_row['id']] = array(
@@ -228,21 +239,72 @@ layout_page_begin();
 
 <div class="col-md-12 col-xs-12">
     <div class="space-10"></div>
-    
-    <div class="widget-box widget-color-blue2">
-        <div class="widget-header widget-header-small">
-            <h4 class="widget-title lighter">
+
+    <!-- Tab Navigation -->
+    <ul class="nav nav-tabs" id="gantt-tabs">
+        <li class="active">
+            <a href="#person-task-table-tab" data-toggle="tab">
+                <i class="ace-icon fa fa-table"></i>
+                任务统计
+            </a>
+        </li>
+        <li>
+            <a href="#gantt-chart-tab" data-toggle="tab">
                 <i class="ace-icon fa fa-bar-chart"></i>
                 <?php echo plugin_lang_get('gantt'); ?>
-            </h4>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+        <!-- Person Task Table Tab -->
+        <div class="tab-pane active" id="person-task-table-tab">
+            <div class="widget-box widget-color-blue2">
+                <div class="widget-header widget-header-small">
+                    <h4 class="widget-title lighter">
+                        <i class="ace-icon fa fa-table"></i>
+                        任务统计
+                    </h4>
+                </div>
+
+                <div class="widget-body">
+                    <div class="widget-main no-padding">
+                        <div id="person-task-table-container"
+                             style="width: 100%; height: 800px; overflow: auto;"
+                             data-gantt-tasks="<?php echo htmlspecialchars($t_tasks_json, ENT_QUOTES, 'UTF-8'); ?>">
+                            <table id="person-task-table" class="table table-bordered table-striped table-hover">
+                                <thead id="person-task-table-head">
+                                    <!-- 表头将由 JavaScript 动态生成 -->
+                                </thead>
+                                <tbody id="person-task-table-body">
+                                    <!-- 表格内容将由 JavaScript 动态生成 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="widget-body">
-            <div class="widget-main no-padding">
-                <div id="gantt-container"
-                     style="width: 100%; height: 800px;"
-                     data-gantt-tasks="<?php echo htmlspecialchars($t_tasks_json, ENT_QUOTES, 'UTF-8'); ?>"
-                     data-gantt-links="<?php echo htmlspecialchars($t_links_json, ENT_QUOTES, 'UTF-8'); ?>">
+        <!-- Gantt Chart Tab -->
+        <div class="tab-pane" id="gantt-chart-tab">
+            <div class="widget-box widget-color-blue2">
+                <div class="widget-header widget-header-small">
+                    <h4 class="widget-title lighter">
+                        <i class="ace-icon fa fa-bar-chart"></i>
+                        <?php echo plugin_lang_get('gantt'); ?>
+                    </h4>
+                </div>
+
+                <div class="widget-body">
+                    <div class="widget-main no-padding">
+                        <div id="gantt-container"
+                             style="width: 100%; height: 800px;"
+                             data-gantt-tasks="<?php echo htmlspecialchars($t_tasks_json, ENT_QUOTES, 'UTF-8'); ?>"
+                             data-gantt-links="<?php echo htmlspecialchars($t_links_json, ENT_QUOTES, 'UTF-8'); ?>">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -250,7 +312,6 @@ layout_page_begin();
 </div>
 
 <!-- 引入 VisActor VTable 和 VTable Gantt -->
-<script src="<?php echo plugin_file('vtable.min.js'); ?>"></script>
 <script src="<?php echo plugin_file('vtable-gantt.min.js'); ?>"></script>
 <script src="<?php echo plugin_file('gantt-init.js'); ?>"></script>
 
